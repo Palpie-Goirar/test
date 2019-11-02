@@ -1,0 +1,1 @@
+pytest -s --alluredir ./allure-result ./tests
