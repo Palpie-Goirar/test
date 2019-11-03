@@ -15,40 +15,58 @@ class ApiClient(object):
 
     def __generation_url(self, url):
         """Метод формирования ссылки"""
-        logger.info('Формируем адрес для запроса')
         with allure.step('Формируем адрес для запроса'):
+            logger.debug('Формируем адрес для запроса')
             link = "https://{}/{}".format(self.address, url)
-            logger.info('Адрес запроса сформирован - {}'.format(link))
+            logger.debug(link)
             allure.attach('Адрес отправления запроса', link)
             return link
 
     def post(self, url):
-        logger.debug('Отправка POST запроса')
+        logger.info('Отправление запроса')
         response = requests.post(self.__generation_url(url))
+        logger.info('Ответ получен')
+        logger.debug(response.status_code)
+        logger.debug(response.text)
         return response
 
     def get(self, url, redirects: bool = None):
         if redirects is not None:
-            logger.debug('Отправка GET запроса с указанным параметром редиректа {}'.format(redirects))
+            logger.info('Отправление запроса. Перенаправление - {}'.format(redirects))
             response = requests.get(self.__generation_url(url), allow_redirects=redirects)
+            logger.info('Ответ получен')
+            logger.debug(response.status_code)
+            logger.debug(response.text)
         else:
-            logger.debug('Отправка GET запроса')
+            logger.info('Отправление запроса')
             response = requests.get(self.__generation_url(url))
+            logger.info('Ответ получен')
+            logger.debug(response.status_code)
+            logger.debug(response.text)
         return response
 
     def delete(self, url):
-        logger.debug('Отправка DELETE запроса')
+        logger.info('Отправление запроса')
         response = requests.delete(self.__generation_url(url))
+        logger.info('Ответ получен')
+        logger.debug(response.status_code)
+        logger.debug(response.text)
         return response
 
     def patch(self, url):
-        logger.debug('Отправка PATCH запроса')
+        logger.info('Отправление запроса')
         response = requests.patch(self.__generation_url(url))
+        logger.info('Ответ получен')
+        logger.debug(response.status_code)
+        logger.debug(response.text)
         return response
 
     def put(self, url):
-        logger.debug('Отправка PUT запроса')
+        logger.info('Отправление запроса')
         response = requests.put(self.__generation_url(url))
+        logger.info('Ответ получен')
+        logger.debug(response.status_code)
+        logger.debug(response.text)
         return response
 
 
@@ -59,7 +77,6 @@ class RequestInspection(object):
         self.api = ApiClient()
 
     def headers(self):
-        logger.debug('Отправляем запрос на страницу headers')
         data = self.api.get('headers')
         return data
 
@@ -115,29 +132,32 @@ class RedirectN(object):
 class ResponseCheck(object):
 
     def checkingSuccess(self, response):
-        logger.info('Проверяем код ответа')
         with allure.step('Проверяем код ответа'):
+            logger.info('Проверяем код ответа')
             allure.attach('Код ответа', response.status_code)
+            logger.debug('Код ответа {}'.format(response.status_code))
             assert response.status_code == 200 or response.status_code == 201
             logger.info('Код ответа верный')
 
     def checkingRedirection(self, response):
-        logger.info('Проверяем код ответа')
         with allure.step('Проверяем код ответа'):
+            logger.info('Проверяем код ответа')
             allure.attach('Код ответа', response.status_code)
+            logger.debug('Код ответа {}'.format(response.status_code))
             assert response.status_code == 300 or response.status_code == 302
             logger.info('Код ответа верный')
 
     def checkingClientErrors(self, response):
-        logger.info('Проверяем код ответа')
         with allure.step('Проверяем код ответа'):
+            logger.info('Проверяем код ответа')
             allure.attach('Код ответа', response.status_code)
             assert response.status_code == 400
             logger.info('Код ответа верный')
 
     def checkingServerErrors(self, response):
-        logger.info('Проверяем код ответа')
         with allure.step('Проверяем код ответа'):
+            logger.info('Проверяем код ответа')
             allure.attach('Код ответа', response.status_code)
+            logger.debug('Код ответа {}'.format(response.status_code))
             assert response.status_code == 500
             logger.info('Код ответа верный')
